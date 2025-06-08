@@ -1,0 +1,15 @@
+pandas
+scikit-learn
+tensorflow
+matplotlib
+seaborn
+fastapi
+uvicorn
+transformers
+torch
+torchvision
+tqdm
+open-clip-torch
+pillow
+faiss-cpu
+faiss-gpu
