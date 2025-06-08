@@ -11,8 +11,6 @@ torchvision
 tqdm
 open-clip-torch
 pillow
-faiss-cpu
-faiss-gpu
 uvicorn
 requests
 torch
