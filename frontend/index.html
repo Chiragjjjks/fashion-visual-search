@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fashion Visual Search</title>
+</head>
+<body>
+  <h2>Visual Search</h2>
+  <input type="text" id="image_url" placeholder="Enter Image URL" style="width: 300px;" />
+  <button onclick="search()">Search</button>
+
+  <h3>Results:</h3>
+  <div id="results" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+
+  <script>
+    async function search() {
+      const url = document.getElementById("image_url").value;
+      const res = await fetch("/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image_url: url, top_k: 5 })
+      });
+
+      const data = await res.json();
+      const container = document.getElementById("results");
+      container.innerHTML = "";
+
+      data.forEach(item => {
+        const img = document.createElement("img");
+        img.src = item.image_url;
+        img.style = "width: 150px; border: 1px solid #ccc; padding: 5px;";
+        container.appendChild(img);
+      });
+    }
+  </script>
+</body>
+</html>

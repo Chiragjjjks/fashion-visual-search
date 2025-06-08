@@ -1,23 +1,25 @@
-from fastapi import FastAPI, Query
-from pydantic import BaseModel
-from typing import List
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from app.search import search_similar
+from pydantic import BaseModel
 
 app = FastAPI()
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to Fashion Visual Search API"}
+# Setup templates folder
+templates = Jinja2Templates(directory="frontend")
 
-class SearchResponseItem(BaseModel):
-    pdp_images_s3: List[str]
-    category_type: str
+# Define input model
+class SearchRequest(BaseModel):
     image_url: str
-    distance: float
+    top_k: int = 5
 
-@app.get("/search", response_model=List[SearchResponseItem])
-async def search(image_url: str = Query(...), top_k: int = 5):
-    results = search_similar(image_url, top_k=top_k)
-    if results is None or len(results) == 0:
-        return []
+@app.get("/", response_class=HTMLResponse)
+async def homepage(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.post("/search")
+async def search_items(request: SearchRequest):
+    results = search_similar(request.image_url, top_k=request.top_k)
     return results.to_dict(orient="records")
